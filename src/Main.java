@@ -1,3 +1,4 @@
+import core.Core;
 import model.Funcionario;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
        List<Funcionario> listaDeFuncionarios = new ArrayList<Funcionario>();
+       Core core = new Core();
         // 3.1 – Inserir todos os funcionários, na mesma ordem e informações da tabela acima.
         listaDeFuncionarios.add(new Funcionario("Maria", LocalDate.of(2000 ,10,18), 2009.44, "Operador"));
         listaDeFuncionarios.add(new Funcionario("João", LocalDate.of(1990 ,05,12 ), 2284.38, "Operador"));
@@ -25,136 +27,40 @@ public class Main {
         listaDeFuncionarios.add(new Funcionario("Helena", LocalDate.of(1996 ,9,02 ), 2799.93, "Gerente"));
 
         //3.2 – Remover o funcionário “João” da lista.
-        removerFuncionario("João", listaDeFuncionarios);
+        core.removerFuncionario("João", listaDeFuncionarios);
         /*
         3.3 – Imprimir todos os funcionários com todas suas informações, sendo que:
         • informação de data deve ser exibido no formato dd/mm/aaaa;
         • informação de valor numérico deve ser exibida no formatado com separador de milhar como ponto e decimal como vírgula.
          */
-        imprimirListaDeFuncionario(listaDeFuncionarios);
+        core.imprimirListaDeFuncionario(listaDeFuncionarios);
         // 3.4 – Os funcionários receberam 10% de aumento de salário, atualizar a lista de funcionários com novo valor.
 
         System.out.println( "Dando Aumento de 10%");
-       darAumento(1.10 , listaDeFuncionarios);
-       imprimirListaDeFuncionario(listaDeFuncionarios);
+       core.darAumento(1.10 , listaDeFuncionarios);
+       core.imprimirListaDeFuncionario(listaDeFuncionarios);
 
         // 3.5 – Agrupar os funcionários por função em um MAP, sendo a chave a “função” e o valor a “lista de funcionários”.
-        Map<String, List<Funcionario>> funcionariosPorFuncao = agruparFuncionariosPorFuncao(listaDeFuncionarios);
-         imprimirFuncionariosPorFuncao(funcionariosPorFuncao);
+        Map<String, List<Funcionario>> funcionariosPorFuncao = core.agruparFuncionariosPorFuncao(listaDeFuncionarios);
+         core.imprimirFuncionariosPorFuncao(funcionariosPorFuncao);
 
        // 3.8 – Imprimir os funcionários que fazem aniversário no mês 10 e 12.
-        imprimirFuncionariosAniversariantes(listaDeFuncionarios, 10 , 12);
+        core.imprimirFuncionariosAniversariantes(listaDeFuncionarios, 10 , 12);
 
         //3.9 – Imprimir o funcionário com a maior idade, exibir os atributos: nome e idade
 
-            funcionarioMaisVelho(listaDeFuncionarios);
+        core.funcionarioMaisVelho(listaDeFuncionarios);
 
        // 3.10 – Imprimir a lista de funcionários por ordem alfabética
-        List<Funcionario> funcionariosOrdenados = odernarListaDeFuncionarioEmOrdemAlfabetica(listaDeFuncionarios);
+        List<Funcionario> funcionariosOrdenados = core.odernarListaDeFuncionarioEmOrdemAlfabetica(listaDeFuncionarios);
         System.out.println("Lista de funcionários por ordem alfabética:");
-        imprimirListaDeFuncionario(funcionariosOrdenados);
+        core.imprimirListaDeFuncionario(funcionariosOrdenados);
 
     //3.11 – Imprimir o total dos salários dos funcionários.
-        somarEImprimirTotalDosSalarios(listaDeFuncionarios);
+        core.somarEImprimirTotalDosSalarios(listaDeFuncionarios);
 
      //   3.12 – Imprimir quantos salários mínimos ganha cada funcionário, considerando que o salário mínimo é R$1212.00.
-        imprimirQntSalariosMinPorFuncionario(listaDeFuncionarios , new BigDecimal("1212.00"));
-
+        core.imprimirQntSalariosMinPorFuncionario(listaDeFuncionarios , new BigDecimal("1212.00"));
     }
-
-    private static void imprimirQntSalariosMinPorFuncionario(List<Funcionario> listaDeFuncionarios, BigDecimal salarioMinimo) {
-        listaDeFuncionarios.forEach(funcionario -> {
-            BigDecimal quantSalariosMinimos = funcionario.getSalario()
-                    .divide(salarioMinimo, 2, RoundingMode.HALF_UP);
-            System.out.println("---------------------------------------------------------------------------------------");
-            System.out.println(funcionario.getNome() + " ganha " + quantSalariosMinimos + " salários mínimos.");
-            System.out.println("---------------------------------------------------------------------------------------");
-        });
-    }
-
-    private static void somarEImprimirTotalDosSalarios(List<Funcionario> listaDeFuncionarios) {
-        BigDecimal totalSalarios = listaDeFuncionarios.stream()
-                .map(Funcionario::getSalario)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        System.out.println("---------------------------------------------------------------------------------------");
-        System.out.println("Total dos salários dos funcionários: " + totalSalarios);
-        System.out.println("---------------------------------------------------------------------------------------");
-    }
-
-    private static List<Funcionario> odernarListaDeFuncionarioEmOrdemAlfabetica(List<Funcionario> listaDeFuncionarios) {
-        List<Funcionario> funcionariosOrdenados = listaDeFuncionarios.stream()
-                .sorted(Comparator.comparing(Funcionario::getNome))
-                .collect(Collectors.toList());
-        return funcionariosOrdenados;
-    }
-
-
-    private static void funcionarioMaisVelho(List<Funcionario> listaDeFuncionarios) {
-        Funcionario funcionarioMaisVelho = listaDeFuncionarios.stream()
-                .max(Comparator.comparingInt(Funcionario::getIdade))
-                .orElseThrow(null);
-        if(funcionarioMaisVelho != null) {
-            System.out.println("---------------------------------------------------------------------------------------");
-            System.out.println("Nome do funcionario mais velho : ".concat(funcionarioMaisVelho.getNome()).concat(" com " + funcionarioMaisVelho.getIdade()));
-            System.out.println("---------------------------------------------------------------------------------------");
-        }
-    }
-
-    private static void imprimirFuncionariosAniversariantes(List<Funcionario> listaDeFuncionarios, int mes1, int mes2) {
-        DateTimeFormatter dataFormatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        List<Funcionario> aniversariantes = listaDeFuncionarios.stream()
-                .filter(funcionario -> {
-                    int mesNascimento = funcionario.getDataNascimento().getMonthValue();
-                    return mesNascimento == mes1|| mesNascimento == mes2;
-                })
-                .collect(Collectors.toList());
-
-        System.out.println("Funcionários que fazem aniversário em outubro ou dezembro:");
-        aniversariantes.forEach(funcionario -> System.out.println(funcionario.getNome() + " - " + funcionario.getDataNascimento().format(dataFormatador)));
-    }
-
-    private static void imprimirFuncionariosPorFuncao(Map<String, List<Funcionario>> funcionariosPorFuncao) {
-        funcionariosPorFuncao.forEach((funcao, lista) -> {
-            System.out.println("Função: " + funcao);
-            lista.forEach(funcionario -> System.out.println("  " + funcionario.getNome()));
-        });
-    }
-
-    private static Map<String, List<Funcionario>> agruparFuncionariosPorFuncao(List<Funcionario> listaDeFuncionarios) {
-        Map<String, List<Funcionario>> funcionariosAgrupados = listaDeFuncionarios.stream()
-                .collect(Collectors.groupingBy(Funcionario::getFuncao));
-        return funcionariosAgrupados;
-    }
-
-    private static void darAumento(double v, List<Funcionario> listaDeFuncionarios) {
-        listaDeFuncionarios.forEach( f -> f.aumentoDeSalario(1.10));
-    }
-
-    private static void imprimirListaDeFuncionario(List<Funcionario> listaDeFuncionarios) {
-        DateTimeFormatter dataFormatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DecimalFormatSymbols simbolos = new DecimalFormatSymbols(new Locale("pt", "BR"));
-        simbolos.setDecimalSeparator(',');
-        simbolos.setGroupingSeparator('.');
-        DecimalFormat salarioFormatador = new DecimalFormat("#,##0.00", simbolos);
-
-        System.out.println("-------------------------------- Lista de Funcionarios -------------------------------");
-        listaDeFuncionarios.forEach(f-> {
-            System.out.println("Nome: ".concat(f.getNome())
-                    .concat(" | Data de Nacimento : ").concat(f.getDataNascimento().format(dataFormatador)
-                            .concat(" | Salario: ").concat(salarioFormatador.format(f.getSalario())
-                                    .concat(" | Função: ").concat(f.getFuncao()))) );
-        });
-        System.out.println("---------------------------------------------------------------------------------------");
-    }
-        public static void removerFuncionario(String nomeFuncionario , List<Funcionario> listaDeFuncionarios) {
-            Funcionario remover = listaDeFuncionarios.stream().filter(f -> f.getNome().equals(nomeFuncionario)).findFirst().orElse(null);
-            if (remover != null) {
-                listaDeFuncionarios.remove(remover);
-                System.out.println( "O funcionario ".concat(remover.getNome()).concat(" foi removido com sucesso!"));
-            }else {
-                System.out.println("Funcionario não encontrado");
-            }
-        }
-
     }
 
