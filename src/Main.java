@@ -29,13 +29,7 @@ public class Main {
         listaDeFuncionarios.add(new Funcionario("Helena", LocalDate.of(1996 ,9,02 ), 2799.93, "Gerente"));
 
         //3.2 – Remover o funcionário “João” da lista.
-        Funcionario remover = listaDeFuncionarios.stream().filter(f -> f.getNome().equals("João")).findFirst().orElse(null);
-         if (remover != null) {
-             listaDeFuncionarios.remove(remover);
-             System.out.println( "O funcionario ".concat(remover.getNome()).concat(" foi removido com sucesso!"));
-         }else {
-             System.out.println("Funcionario não encontrado");
-         }
+        removerFuncionario("João", listaDeFuncionarios);
         /*
         3.3 – Imprimir todos os funcionários com todas suas informações, sendo que:
         • informação de data deve ser exibido no formato dd/mm/aaaa;
@@ -43,12 +37,12 @@ public class Main {
          */
         imprimirListaDeFuncionario(listaDeFuncionarios);
         // 3.4 – Os funcionários receberam 10% de aumento de salário, atualizar a lista de funcionários com novo valor.
-       listaDeFuncionarios.forEach( f -> f.aumentoDeSalario(1.10));
+       darAumento(1.10 , listaDeFuncionarios);
        imprimirListaDeFuncionario(listaDeFuncionarios);
 
+        // 3.5 – Agrupar os funcionários por função em um MAP, sendo a chave a “função” e o valor a “lista de funcionários”.
         Map<String, List<Funcionario>> funcionariosPorFuncao = listaDeFuncionarios.stream()
                 .collect(Collectors.groupingBy(Funcionario::getFuncao));
-        // 3.5 – Agrupar os funcionários por função em um MAP, sendo a chave a “função” e o valor a “lista de funcionários”.
         funcionariosPorFuncao.forEach((funcao, lista) -> {
             System.out.println("Função: " + funcao);
             lista.forEach(funcionario -> System.out.println("  " + funcionario.getNome()));
@@ -105,6 +99,10 @@ public class Main {
 
     }
 
+    private static void darAumento(double v, List<Funcionario> listaDeFuncionarios) {
+        listaDeFuncionarios.forEach( f -> f.aumentoDeSalario(1.10));
+    }
+
     private static void imprimirListaDeFuncionario(List<Funcionario> listaDeFuncionarios) {
         DateTimeFormatter dataFormatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DecimalFormatSymbols simbolos = new DecimalFormatSymbols(new Locale("pt", "BR"));
@@ -121,5 +119,15 @@ public class Main {
         });
         System.out.println("---------------------------------------------------------------------------------------");
     }
+        public static void removerFuncionario(String nomeFuncionario , List<Funcionario> listaDeFuncionarios) {
+            Funcionario remover = listaDeFuncionarios.stream().filter(f -> f.getNome().equals(nomeFuncionario)).findFirst().orElse(null);
+            if (remover != null) {
+                listaDeFuncionarios.remove(remover);
+                System.out.println( "O funcionario ".concat(remover.getNome()).concat(" foi removido com sucesso!"));
+            }else {
+                System.out.println("Funcionario não encontrado");
+            }
+        }
+
     }
 
