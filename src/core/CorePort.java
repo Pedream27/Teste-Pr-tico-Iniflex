@@ -7,25 +7,24 @@ import java.util.List;
 import java.util.Map;
 
 public interface CorePort {
+    void removerFuncionario(String nomeFuncionario , List<Funcionario> listaDeFuncionarios);
 
-    public void removerFuncionario(String nomeFuncionario , List<Funcionario> listaDeFuncionarios);
+    void imprimirListaDeFuncionario(List<Funcionario> listaDeFuncionarios);
 
-    public void imprimirListaDeFuncionario(List<Funcionario> listaDeFuncionarios);
+    void darAumento(double v, List<Funcionario> listaDeFuncionarios);
 
-    public void darAumento(double v, List<Funcionario> listaDeFuncionarios);
+    Map<String, List<Funcionario>> agruparFuncionariosPorFuncao(List<Funcionario> listaDeFuncionarios);
 
-    public Map<String, List<Funcionario>> agruparFuncionariosPorFuncao(List<Funcionario> listaDeFuncionarios);
+    void imprimirFuncionariosPorFuncao(Map<String, List<Funcionario>> funcionariosPorFuncao);
 
-    public void imprimirFuncionariosPorFuncao(Map<String, List<Funcionario>> funcionariosPorFuncao);
+    void imprimirFuncionariosAniversariantes(List<Funcionario> listaDeFuncionarios, int mes1, int mes2);
 
-    public void imprimirFuncionariosAniversariantes(List<Funcionario> listaDeFuncionarios, int mes1, int mes2);
+    void funcionarioMaisVelho(List<Funcionario> listaDeFuncionarios);
 
-    public void funcionarioMaisVelho(List<Funcionario> listaDeFuncionarios);
+    List<Funcionario> odernarListaDeFuncionarioEmOrdemAlfabetica(List<Funcionario> listaDeFuncionarios);
 
-    public List<Funcionario> odernarListaDeFuncionarioEmOrdemAlfabetica(List<Funcionario> listaDeFuncionarios);
+    void somarEImprimirTotalDosSalarios(List<Funcionario> listaDeFuncionarios);
 
-    public void somarEImprimirTotalDosSalarios(List<Funcionario> listaDeFuncionarios);
-
-    public void imprimirQntSalariosMinPorFuncionario(List<Funcionario> listaDeFuncionarios, BigDecimal salarioMinimo);
+    void imprimirQntSalariosMinPorFuncionario(List<Funcionario> listaDeFuncionarios, BigDecimal salarioMinimo);
 
 }
